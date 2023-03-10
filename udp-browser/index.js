@@ -25,10 +25,11 @@ var getIPAddresses = function () {
 };
 
 var udp = new osc.UDPPort({
-    localAddress: "0.0.0.0",
+    localAddress: "127.0.0.1",
     localPort: 7400,
     remoteAddress: "127.0.0.1",
-    remotePort: 7500
+    remotePort: 7500,
+    metadata: true
 });
 
 udp.on("ready", function () {
@@ -37,7 +38,7 @@ udp.on("ready", function () {
     ipAddresses.forEach(function (address) {
         console.log(" Host:", address + ", Port:", udp.options.localPort);
     });
-    console.log("Broadcasting OSC over UDP to", udp.options.remoteAddress + ", Port:", udp.options.remotePort);
+    console.log("Broadcasting OSC over UDP to", udp.options.remoteAddress + ", Port:", udp.options.remotePort);    
 });
 
 udp.open();
@@ -49,10 +50,11 @@ var wss = new WebSocket.Server({
 wss.on("connection", function (socket) {
     console.log("A Web Socket connection has been established!");
     var socketPort = new osc.WebSocketPort({
-        socket: socket
+        socket: socket,
+        metadata: true
     });
 
     var relay = new osc.Relay(udp, socketPort, {
-        raw: true
+        raw: false
     });
 });
